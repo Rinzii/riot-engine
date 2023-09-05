@@ -18,16 +18,19 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(mim)
 
+set(RAPIDJSON_BUILD_DOC OFF CACHE BOOL "" FORCE)
+set(RAPIDJSON_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(RAPIDJSON_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(RAPIDJSON_BUILD_CXX17 ON CACHE BOOL "" FORCE)
+
 FetchContent_Declare(
         RapidJSON
         GIT_REPOSITORY https://github.com/Tencent/rapidjson.git
-        GIT_TAG        v1.1.0
+        GIT_TAG        476ffa2fd272243275a74c36952f210267dc3088
+        GIT_SHALLOW    TRUE
 )
 FetchContent_MakeAvailable(RapidJSON)
 
-#set(RAPIDJSON_BUILD_DOC OFF)
-#set(RAPIDJSON_BUILD_EXAMPLES OFF)
-#set(RAPIDJSON_BUILD_TESTS OFF)
 
 if (NOT RIOT_OS_XBOX AND NOT RIOT_OS_PSX)
         add_subdirectory(src/vk_dynamic)
