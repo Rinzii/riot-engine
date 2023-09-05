@@ -1,6 +1,6 @@
 if (RIOT_BUILD_TOOLS)
     # This tool is solely internal and does not need to be built by our ci
-    if(NOT (RIOT_OS_MACOS OR RIOT_OS_IOS OR RIOT_OS_ANDROID OR RIOT_OS_PSX OR RIOT_OS_XBOX))
+    if(RIOT_OS_WINDOWS OR RIOT_OS_LINUX OR INTERNAL_RIOT_FORCE_AUTOFORMAT)
         add_subdirectory(code-formatter)
     endif()
     add_subdirectory(EmbeddedShader)
