@@ -2,9 +2,15 @@ cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 
 project(code-formatter)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_DEBUG_POSTFIX "-d")
+
+include(FetchContent)
+FetchContent_Declare(
+    boost-algo
+    GIT_REPOSITORY
+
 
 add_executable(${PROJECT_NAME})
 
