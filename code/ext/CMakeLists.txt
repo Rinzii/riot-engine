@@ -7,7 +7,7 @@ project(riot-ext)
 find_package(Threads)
 
 
-file(ARCHIVE_EXTRACT INPUT "${RIOTENGINE_ROOT_DIR}/code/ext/src.zip" DESTINATION "${RIOTENGINE_ROOT_DIR}/code/ext")
+#file(ARCHIVE_EXTRACT INPUT "${RIOTENGINE_ROOT_DIR}/code/ext/src.zip" DESTINATION "${RIOTENGINE_ROOT_DIR}/code/ext")
 
 
 include(FetchContent)
@@ -17,6 +17,17 @@ FetchContent_Declare(
         GIT_TAG       origin/main # TODO: change this to a commit hash or tag once mim is stable
 )
 FetchContent_MakeAvailable(mim)
+
+FetchContent_Declare(
+        RapidJSON
+        GIT_REPOSITORY https://github.com/Tencent/rapidjson.git
+        GIT_TAG        v1.1.0
+)
+FetchContent_MakeAvailable(RapidJSON)
+
+#set(RAPIDJSON_BUILD_DOC OFF)
+#set(RAPIDJSON_BUILD_EXAMPLES OFF)
+#set(RAPIDJSON_BUILD_TESTS OFF)
 
 if (NOT RIOT_OS_XBOX AND NOT RIOT_OS_PSX)
         add_subdirectory(src/vk_dynamic)
@@ -48,11 +59,6 @@ set(LUABRIDGE_CXX17 ON)
 set(LUABRIDGE_TESTING OFF)
 add_subdirectory(src/LuaBridge)
 add_library(luabridge::luabridge ALIAS LuaBridge)
-
-set(RAPIDJSON_BUILD_DOC OFF)
-set(RAPIDJSON_BUILD_EXAMPLES OFF)
-set(RAPIDJSON_BUILD_TESTS OFF)
-add_subdirectory(src/rapidjson)
 
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 set(SPIRV_CROSS_CLI OFF)
