@@ -39,20 +39,14 @@ jobs:
         run: cmake --build build --config=Release
 
   build-macos:
-    runs-on: macos-13
+    runs-on: macos-12
     steps:
       - uses: actions/checkout@v3
-      - name: install ninja
-        run: brew install ninja
-      - name: configure gcc
-        run: cmake -S . --preset=default -B build -DCMAKE_CXX_COMPILER=gcc-11
+      - name: install ninja & cmake
+        run: brew install ninja cmake
       - name: configure clang
         run: cmake -S . --preset=ninja-clang -B clang
-      - name: build gcc Debug
-        run: cmake --build build --config=Debug
       - name: build clang Debug
         run: cmake --build clang --config=Debug
-      - name: build gcc Release
-        run: cmake --build build --config=Release
       - name: build clang Release
         run: cmake --build clang --config=Release

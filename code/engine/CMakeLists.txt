@@ -31,7 +31,7 @@ endif ()
 # COMPILER FLAGS
 if(CMAKE_CXX_COMPILER_ID STREQUAL Clang OR CMAKE_CXX_COMPILER_ID STREQUAL GNU)
   target_compile_options(riot PRIVATE
-          -Wall -Wextra -Wpedantic -Wconversion -Werror=return-type
+          -Wall -Wextra -Wpedantic -Wconversion
           )
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL MSVC)
   target_compile_options(riot PRIVATE

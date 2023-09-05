@@ -2,7 +2,6 @@
 #include <cassert>
 #include <filesystem>
 #include <iostream>
-#include <mutex>
 #include <span>
 #include <vector>
 
