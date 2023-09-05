@@ -38,6 +38,22 @@ if (NOT RIOT_OS_XBOX AND NOT RIOT_OS_PSX)
 
         add_subdirectory(src/vma)
         add_library(vma::vma ALIAS vma)
+
+        set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
+        set(SPIRV_CROSS_CLI OFF)
+        set(SPIRV_CROSS_ENABLE_CPP OFF)
+        set(SPIRV_CROSS_ENABLE_C_API OFF)
+        set(SPIRV_CROSS_ENABLE_GLSL ON)
+        set(SPIRV_CROSS_ENABLE_HLSL ON)
+        set(SPIRV_CROSS_ENABLE_MSL OFF)
+        set(SPIRV_CROSS_ENABLE_REFLECT OFF)
+        set(SPIRV_CROSS_ENABLE_TESTS OFF)
+        set(SPIRV_CROSS_ENABLE_UTIL OFF)
+        set(SPIRV_CROSS_SHARED OFF)
+        set(SPIRV_CROSS_STATIC ON)
+        set(SPIRV_CROSS_SKIP_INSTALL ON)
+        add_subdirectory(src/spirv_cross)
+        add_library(SPIRVCross::HLSL ALIAS spirv-cross-hlsl)
 endif ()
 
 if (RIOT_OS_WINDOWS OR RIOT_OS_XBOX)
@@ -63,21 +79,7 @@ set(LUABRIDGE_TESTING OFF)
 add_subdirectory(src/LuaBridge)
 add_library(luabridge::luabridge ALIAS LuaBridge)
 
-set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
-set(SPIRV_CROSS_CLI OFF)
-set(SPIRV_CROSS_ENABLE_CPP OFF)
-set(SPIRV_CROSS_ENABLE_C_API OFF)
-set(SPIRV_CROSS_ENABLE_GLSL ON)
-set(SPIRV_CROSS_ENABLE_HLSL ON)
-set(SPIRV_CROSS_ENABLE_MSL OFF)
-set(SPIRV_CROSS_ENABLE_REFLECT OFF)
-set(SPIRV_CROSS_ENABLE_TESTS OFF)
-set(SPIRV_CROSS_ENABLE_UTIL OFF)
-set(SPIRV_CROSS_SHARED OFF)
-set(SPIRV_CROSS_STATIC ON)
-set(SPIRV_CROSS_SKIP_INSTALL ON)
-add_subdirectory(src/spirv_cross)
-add_library(SPIRVCross::HLSL ALIAS spirv-cross-hlsl)
+
 
 add_subdirectory(src/stb)
 add_library(stb::image ALIAS stb-image)
@@ -91,6 +93,7 @@ if (NOT RIOT_OS_XBOX AND NOT RIOT_OS_PSX)
         target_link_libraries(riot-ext INTERFACE
                 vk-dynamic::vk-dynamic
                 vma::vma
+                SPIRVCross::HLSL
         )
 endif ()
 
