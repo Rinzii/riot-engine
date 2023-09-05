@@ -18,11 +18,19 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(mim)
 
-add_subdirectory(src/vk_dynamic)
-add_library(vk-dynamic::vk-dynamic ALIAS vk-dynamic)
+if (NOT RIOT_OS_XBOX AND NOT RIOT_OS_PSX)
+        add_subdirectory(src/vk_dynamic)
+        add_library(vk-dynamic::vk-dynamic ALIAS vk-dynamic)
 
-add_subdirectory(src/d3dma)
-add_library(d3d12ma::d3d12ma ALIAS D3D12MemoryAllocator)
+        add_subdirectory(src/vma)
+        add_library(vma::vma ALIAS vma)
+endif ()
+
+if (RIOT_OS_WINDOWS OR RIOT_OS_XBOX)
+        add_subdirectory(src/d3dma)
+        add_library(d3d12ma::d3d12ma ALIAS D3D12MemoryAllocator)
+endif ()
+
 
 add_subdirectory(src/dxc)
 add_library(dxc::dxc ALIAS dxc)
@@ -65,17 +73,27 @@ add_library(SPIRVCross::HLSL ALIAS spirv-cross-hlsl)
 add_subdirectory(src/stb)
 add_library(stb::image ALIAS stb-image)
 
-add_subdirectory(src/vma)
-add_library(vma::vma ALIAS vma)
+
 
 
 add_library(riot-ext INTERFACE)
 add_library(riot::ext ALIAS riot-ext)
 
+if (NOT RIOT_OS_XBOX AND NOT RIOT_OS_PSX)
+        target_link_libraries(riot-ext INTERFACE
+                vk-dynamic::vk-dynamic
+                vma::vma
+        )
+endif ()
+
+if (RIOT_OS_WINDOWS OR RIOT_OS_XBOX)
+        target_link_libraries(riot-ext INTERFACE
+                d3d12ma::d3d12ma
+        )
+endif ()
+
 target_link_libraries(riot-ext INTERFACE
         mim::mim
-        vk-dynamic::vk-dynamic
-        d3d12ma::d3d12ma
         dxc::dxc
         fmt::fmt
         SDL2::SDL2
@@ -84,8 +102,12 @@ target_link_libraries(riot-ext INTERFACE
         RapidJSON
         SPIRVCross::HLSL
         stb::image
-        vma::vma
 
         Threads::Threads
         )
+
+
+
+
+
 
