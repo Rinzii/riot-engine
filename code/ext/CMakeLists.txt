@@ -7,7 +7,7 @@ project(riot-ext)
 find_package(Threads)
 
 
-file(ARCHIVE_EXTRACT INPUT "${RIOTENGINE_ROOT_DIR}/code/ext/src.zip" DESTINATION "${RIOTENGINE_ROOT_DIR}/code/ext")
+#file(ARCHIVE_EXTRACT INPUT "${RIOTENGINE_ROOT_DIR}/code/ext/src.zip" DESTINATION "${RIOTENGINE_ROOT_DIR}/code/ext")
 
 
 include(FetchContent)
