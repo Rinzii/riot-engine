@@ -1,0 +1,8 @@
+
+#pragma once
+#include "util/version.hpp"
+
+namespace riot
+{
+constexpr auto version_v = Version{@PROJECT_VERSION_MAJOR@, @PROJECT_VERSION_MINOR@, @PROJECT_VERSION_PATCH@};
+}
