@@ -1,0 +1,28 @@
+name: build-vm
+on:
+  push:
+    tags-ignore: v*.*
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+jobs:
+  build-freebsd:
+    runs-on: macos-12
+    name: FreeBSD
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build
+        uses: vmactions/freebsd-vm@v0
+        with:
+          mem: 8192
+          usesh: true
+          prepare: |
+            pkg install -y \
+                cmake \
+                ninja
+
+          run: |
+            cmake -S . --preset=ninja-clang -B clang
+            cmake --build clang --config=Release

@@ -1,0 +1,58 @@
+name: build
+on:
+  push:
+    tags-ignore: v*.*
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: init
+        run: sudo apt install -yqq ninja-build g++
+      - name: configure gcc
+        run: cmake -S . --preset=default -B build -DCMAKE_CXX_COMPILER=g++
+      - name: configure clang
+        run: cmake -S . --preset=ninja-clang -B clang
+      - name: build gcc Debug
+        run: cmake --build build --config=Debug
+      - name: build clang Debug
+        run: cmake --build clang --config=Debug
+      - name: build gcc Release
+        run: cmake --build build --config=Release
+      - name: build clang Release
+        run: cmake --build clang --config=Release
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: configure
+        run: cmake -S . --preset=vs22 -B build
+      - name: build debug
+        run: cmake --build build --config=Debug
+      - name: build release
+        run: cmake --build build --config=Release
+
+  build-macos:
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v3
+      - name: install ninja
+        run: brew install ninja
+      - name: configure gcc
+        run: cmake -S . --preset=default -B build -DCMAKE_CXX_COMPILER=gcc-11
+      - name: configure clang
+        run: cmake -S . --preset=ninja-clang -B clang
+      - name: build gcc Debug
+        run: cmake --build build --config=Debug
+      - name: build clang Debug
+        run: cmake --build clang --config=Debug
+      - name: build gcc Release
+        run: cmake --build build --config=Release
+      - name: build clang Release
+        run: cmake --build clang --config=Release
