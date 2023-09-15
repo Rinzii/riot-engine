@@ -2,22 +2,48 @@
 
 #pragma once
 
-#if defined(RIOT_PLATFORM_PS4) || defined(__ORBIS__)
+// NOLINTBEGIN
 
+// TODO: Add platform detection for the nintendo switch
+// TODO: Add platform detection for the xbox series x/s
+
+
+// Pretty confident this will cover all modern PSX platforms.
+#if defined(RIOT_PLATFORM_PS4) || defined(RIOT_PLATFORM_PS5) || defined(__ORBIS__) || defined(__PROSPERO__) || defined(__SCE__)
+
+#if defined(__ORBIS__)
+    // Platform specific defines for PS4
     #undef RIOT_PLATFORM_PS4
     #define RIOT_PLATFORM_PS4 1
-
-    // Generic platform define for PSX
     #undef RIOT_PLATFORM_ORBIS
     #define RIOT_PLATFORM_ORBIS 1
 
     #define RIOT_PLATFORM_NAME "PS4"
     #define RIOT_PLATFORM_CONSOLE 1
+
+    // Generic platform defines for PSX
     #define RIOT_PLATFORM_SONY 1
     #define RIOT_PLATFORM_POSIX 1
 
+#elif defined(__PROSPERO__)
+    // Platform specific defines for PS5
+    #undef RIOT_PLATFORM_PS5
+    #define RIOT_PLATFORM_PS5 1
+    #undef RIOT_PLATFORM_PROSPERO
+    #define RIOT_PLATFORM_PROSPERO 1
 
+    #define RIOT_PLATFORM_NAME "PS5"
+    #define RIOT_PLATFORM_CONSOLE 1
 
+    // Generic platform defines for PSX
+    #define RIOT_PLATFORM_SONY 1
+    #define RIOT_PLATFORM_POSIX 1
+
+#else
+    #error Unknown Sony platform
+#endif
+
+# TODO: Currently this only likely detects xbox one, need to add xbox series x
 #elif defined(RIOT_PLATFORM_XBOXONE) || defined(_DURANGO) || defined(_XBOX_ONE) || defined(_GAMING_XBOX)
     #undef RIOT_PLATFORM_XBOXONE
     #define RIOT_PLATFORM_XBOXONE 1
@@ -210,3 +236,61 @@
 #else
 	#error Unknown platform
 #endif
+
+
+// RIOT_PLATFORM_PTR_SIZE
+// Platform pointer size; same as sizeof(void*).
+// This is not the same as sizeof(int), as int is usually 32 bits on
+// even 64 bit platforms.
+//
+// _WIN64 is defined by Win64 compilers, such as VC++.
+// _M_IA64 is defined by VC++ and Intel compilers for IA64 processors.
+// __LP64__ is defined by HP compilers for the LP64 standard.
+// _LP64 is defined by the GCC and Sun compilers for the LP64 standard.
+// __ia64__ is defined by the GCC compiler for IA64 processors.
+// __arch64__ is defined by the Sparc compiler for 64 bit processors.
+// __mips64__ is defined by the GCC compiler for MIPS processors.
+// __powerpc64__ is defined by the GCC compiler for PowerPC processors.
+// __64BIT__ is defined by the AIX compiler for 64 bit processors.
+// __sizeof_ptr is defined by the ARM compiler (armcc, armcpp).
+//
+#ifndef RIOT_PLATFORM_PTR_SIZE
+#if defined(__WORDSIZE) // Defined by some variations of GCC.
+#define RIOT_PLATFORM_PTR_SIZE ((__WORDSIZE) / 8)
+#elif defined(_WIN64) || defined(__LP64__) || defined(_LP64) || defined(_M_IA64) || defined(__ia64__) || defined(__arch64__) || defined(__aarch64__) || defined(__mips64__) || defined(__64BIT__) || defined(__Ptr_Is_64)
+#define RIOT_PLATFORM_PTR_SIZE 8
+#elif defined(__CC_ARM) && (__sizeof_ptr == 8)
+#define RIOT_PLATFORM_PTR_SIZE 8
+	#else
+		#define RIOT_PLATFORM_PTR_SIZE 4
+#endif
+#endif
+
+// RIOT_PLATFORM_WORD_SIZE
+// This defines the size of a machine word. This will be the same as
+// the size of registers on the machine but not necessarily the same
+// as the size of pointers on the machine. A number of 64-bit platforms
+// have 64 bit registers but 32 bit pointers.
+//
+#ifndef RIOT_PLATFORM_WORD_SIZE
+#define RIOT_PLATFORM_WORD_SIZE RIOT_PLATFORM_PTR_SIZE
+#endif
+
+// RIOT_PLATFORM_MIN_MALLOC_ALIGNMENT
+// This defines the minimal alignment that the platform's malloc 
+// implementation will return. This should be used when writing custom
+// allocators to ensure that the alignment matches that of malloc
+#ifndef RIOT_PLATFORM_MIN_MALLOC_ALIGNMENT
+#if defined(RIOT_PLATFORM_APPLE)
+#define RIOT_PLATFORM_MIN_MALLOC_ALIGNMENT 16
+#elif defined(RIOT_PLATFORM_ANDROID) && defined(RIOT_PROCESSOR_ARM)
+#define RIOT_PLATFORM_MIN_MALLOC_ALIGNMENT 8
+#elif defined(RIOT_PLATFORM_ANDROID) && defined(RIOT_PROCESSOR_X86_64)
+#define RIOT_PLATFORM_MIN_MALLOC_ALIGNMENT 8
+#else
+#define RIOT_PLATFORM_MIN_MALLOC_ALIGNMENT (RIOT_PLATFORM_PTR_SIZE * 2)
+#endif
+#endif
+
+
+// NOLINTEND

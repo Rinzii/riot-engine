@@ -39,6 +39,63 @@
 	#error "Unknown architecture"
 #endif
 
+
+// RIOT_MISALIGNED_SUPPORT_LEVEL
+// Specifies if the processor can read and write built-in types that aren't
+// naturally aligned.
+//    0 - not supported. Likely causes an exception.
+//    1 - supported but slow.
+//    2 - supported and fast.
+//
+#ifndef RIOT_MISALIGNED_SUPPORT_LEVEL
+#if defined(RIOT_ARCH_X64)
+#define RIOT_MISALIGNED_SUPPORT_LEVEL 2
+#else
+#define RIOT_MISALIGNED_SUPPORT_LEVEL 0
+#endif
+#endif
+
+// NOTE: Mirrored from riot/core/base/config/platform.h
+// NOTE: This is being mirrored to avoid requiring the entire platform.h file to be included.
+
+#ifndef RIOT_PLATFORM_PTR_SIZE
+#if defined(__WORDSIZE) // Defined by some variations of GCC.
+#define RIOT_PLATFORM_PTR_SIZE ((__WORDSIZE) / 8)
+#elif defined(_WIN64) || defined(__LP64__) || defined(_LP64) || defined(_M_IA64) || defined(__ia64__) || defined(__arch64__) || defined(__aarch64__) || defined(__mips64__) || defined(__64BIT__) || defined(__Ptr_Is_64)
+#define RIOT_PLATFORM_PTR_SIZE 8
+#elif defined(__CC_ARM) && (__sizeof_ptr == 8)
+#define RIOT_PLATFORM_PTR_SIZE 8
+	#else
+		#define RIOT_PLATFORM_PTR_SIZE 4
+#endif
+#endif
+
+#ifndef RIOT_PLATFORM_WORD_SIZE
+#define RIOT_PLATFORM_WORD_SIZE RIOT_PLATFORM_PTR_SIZE
+#endif
+
+// RIOT_CACHE_LINE_SIZE
+// Specifies the cache line size broken down by compile target.
+// This the expected best guess values for the targets that we can make at compilation time.
+
+#ifndef RIOT_CACHE_LINE_SIZE
+#if   defined(RIOT_ARCH_X86)
+#define RIOT_CACHE_LINE_SIZE 32    // This is the minimum possible value.
+#elif defined(RIOT_ARCH_X64)
+#define RIOT_CACHE_LINE_SIZE 64    // This is the minimum possible value
+#elif defined(RIOT_ARCH_ARM)
+#define RIOT_CACHE_LINE_SIZE 32    // This varies between implementations and is usually 32 or 64.
+#elif defined(RIOT_ARCH_ARM64)
+#define RIOT_CACHE_LINE_SIZE 64    // Cache line Cortex-A8  (64 bytes) http://shervinemami.info/armAssembly.html however this remains to be mostly an assumption at this stage
+#elif (RIOT_PLATFORM_WORD_SIZE == 4)
+#define RIOT_CACHE_LINE_SIZE 32    // This is the minimum possible value
+#else
+#define RIOT_CACHE_LINE_SIZE 64    // This is the minimum possible value
+#endif
+#endif
+
+
+
 // TODO: This could prob be made much better but for now it will work.
 
 // Currently we allow simd to be enabled by cmake which creates a preprocessor macro.
